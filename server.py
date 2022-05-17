@@ -74,7 +74,6 @@ def main():
             length = int(size/FLAGS.data_size)
             seq = 0
             i = 0
-            excepting = False
 
             if command == 'INFO':
                 size_b = str(size).encode('utf-8')
@@ -98,10 +97,10 @@ def main():
                         ack_flag = False
 
                         while not ack_flag:
-                            if excepting:  # exception case 1
+                            if FLAGS.exception1:  # exception case 1
                                 print("exception case 1...")
                                 time.sleep(5)
-                                excepting = False
+                                FLAGS.exception1 = False
                             else:
                                 try:
                                     chunk, client = sock.recvfrom(FLAGS.mtu)
@@ -141,7 +140,8 @@ if __name__ == '__main__':
                         help='The maximum transmission unit')
     parser.add_argument('--files', type=str, default='./files',
                         help='The file directory path')
-
+    parser.add_argument('--exception1', type=bool, default=False,
+                        help='The file directory path')
     FLAGS, _ = parser.parse_known_args()
     DEBUG = FLAGS.debug
 
