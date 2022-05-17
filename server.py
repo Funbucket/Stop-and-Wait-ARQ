@@ -2,6 +2,7 @@ import os
 import socket
 import struct
 import time
+import sys
 
 FLAGS = _ = None
 DEBUG = False
@@ -115,8 +116,16 @@ def main():
                                     print("resending to handle exception case 2...")
                                     sock.sendto(chunk, client)
 
-                        sock.settimeout(None)
-            print(f'File transfer complete {target}')
+                    sock.settimeout(None)
+
+                    sock.settimeout(FLAGS.timeout*2)
+                    try:
+                        chunk, client = sock.recvfrom(FLAGS.mtu)
+                    except socket.timeout:
+                        print(f'File transfer complete {target}')
+                        sys.exit()
+                    sock.settimeout(None)
+
         except KeyboardInterrupt:
             print(f'Shutting down... {sock}')
             break
